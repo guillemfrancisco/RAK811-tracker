@@ -26,7 +26,7 @@
 /*!
  * Defines the application data transmission duty cycle. 5s, value in [ms].
  */
-#define APP_TX_DUTYCYCLE                            20000
+#define APP_TX_DUTYCYCLE                            5000
 
 /*!
  * Defines a random delay for application data transmission duty cycle. 1s,
@@ -210,7 +210,7 @@ static void PrepareTxFrame(uint8_t port) {
 	uint16_t bat;
 
 	switch (port) {
-		
+
 	case 2: {
 		ret = GpsGetLatestGpsPositionDouble(&latitude, &longitude);
 		altitudeGps = GpsGetLatestGpsAltitude(); // in m
@@ -221,7 +221,7 @@ static void PrepareTxFrame(uint8_t port) {
 		uint32_t lon = ((longitude + 180) / 360.0) * 16777215;
 		uint16_t alt = altitudeGps;
 		uint8_t hdev = hdopGps * 10;
-		
+
 		if (ret == SUCCESS) {
 
 			printf("Lat: %d Lon: %d, Alt: %d\r\n", (int)lat, (int)lon, alt);
@@ -817,11 +817,8 @@ int main(void) {
 				err = SendFrame();
 				NextTx = err == LORAMAC_STATUS_OK;
 				printf("SendFrame: %d\r\n", err);
-				
-				AppPort++;
-				if (AppPort >= 5) {
-					AppPort = 2;
-				}
+
+				AppPort = 2;
 			}
 			if (ComplianceTest.Running == true) {
 				// Schedule next packet transmission
@@ -878,12 +875,12 @@ int main(void) {
 #define LED2_PIN                                GPIO_PIN_4
 #define LED2_GPIO_PORT                          GPIOB
 #define LED2_GPIO_CLK_ENABLE()                  __HAL_RCC_GPIOB_CLK_ENABLE()
-void LED_Init(); 
+void LED_Init();
 
 int main(void) {
   HAL_Init();
   LED_Init();
-  
+
   while (1)
   {
     HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_PIN);
